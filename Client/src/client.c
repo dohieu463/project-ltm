@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
         case 8:
         {
             // Rời nhóm chat
-            // ...
+            leaveGroup(clientSocket);
             break;
         }
         case 9:

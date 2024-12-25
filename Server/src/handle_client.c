@@ -377,6 +377,28 @@ void *handleClient(void *arg)
                     // Không tìm thấy user_id <=> Chưa đăng nhập
                 }
             }
+            else if (strncmp(buffer_full, "leave_group", 11) == 0)
+            {
+                char user_id[10];
+                char *foundUserId = findUserIdBySocket(*sessionList, conn_fd);
+                strncpy(user_id, foundUserId, sizeof(user_id) - 1);
+                user_id[sizeof(user_id) - 1] = '\0';
+                char *groupID = strchr(buffer_full, '\n');
+                if (groupID)
+                {
+                    groupID++;                                // Bỏ qua ký tự xuống dòng
+                    groupID[strcspn(groupID, "\r\n")] = '\0'; // Xóa ký tự newline
+
+                    
+                    code = leaveGroup(conn_fd, user_id, groupID);
+                    loggingActivity(command, code);
+                }
+                else
+                {
+                    send(conn_fd, "4017", strlen("4017"), 0); // Lỗi yêu cầu không hợp lệ
+                    loggingActivity(command, 4017);
+                }
+            }
             else if (strncmp(buffer_full, "send_message_group", 18) == 0)
             {
                 char user_id[10];

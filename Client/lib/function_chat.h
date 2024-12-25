@@ -19,4 +19,5 @@ void getListGroup(int clientSocket);
 void changePassword(int clientSocket);
 void createGroup(int clientSocket);
 void unfriend(int clientSocket);
+void leaveGroup(int clientSocket);
 #endif

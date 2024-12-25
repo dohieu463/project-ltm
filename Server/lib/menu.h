@@ -12,4 +12,6 @@ int friendRequest(char *message, int socket_fd, const struct Session **sessionLi
 int friendAccept(char *message, int socket_fd);
 int disconnect(char *message, int socket_fd);
 int viewFriendRequest(char *user_id, int socket_fd);
+int createGroup(char *groupid, char *members, int conn_fd);
+int unFriend(char *user_id, int socket_fd, char *data);
 #endif

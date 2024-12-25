@@ -17,4 +17,6 @@ void disconnectFunction(int clientSocket);
 void viewFriendRequestFunction(int clientSocket);
 void getListGroup(int clientSocket);
 void changePassword(int clientSocket);
+void createGroup(int clientSocket);
+void unfriend(int clientSocket);
 #endif

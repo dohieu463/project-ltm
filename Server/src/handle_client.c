@@ -10,25 +10,30 @@
 #include "../lib/sessionManager.h"
 #include "../lib/handle_client.h"
 #include <time.h>
-void rewriteCommand(char* src, char* dest){
+void rewriteCommand(char *src, char *dest)
+{
     memset(dest, BUFF_SIZE, '\0');
-    int pos = 0;  // Vị trí hiện tại trong chuỗi dest
-    
-    for(int i = 0; src[i] != '\0'; i++) {
-        if(src[i] == '\n') {
+    int pos = 0; // Vị trí hiện tại trong chuỗi dest
+
+    for (int i = 0; src[i] != '\0'; i++)
+    {
+        if (src[i] == '\n')
+        {
             pos += sprintf(dest + pos, "[\\n]");
-        } 
-        else if(src[i] == '\r') {
+        }
+        else if (src[i] == '\r')
+        {
             pos += sprintf(dest + pos, "[\\r]");
         }
-        else {
+        else
+        {
             dest[pos] = src[i];
             pos++;
         }
     }
     dest[pos] = '\0';
 }
-void loggingActivity(char* message, int protocol)
+void loggingActivity(char *message, int protocol)
 {
     time_t current_time;
     char formatted_time[256];
@@ -133,7 +138,6 @@ void *handleClient(void *arg)
                     printf("\n");
                     code = handleLogin(remaining_data, conn_fd, sessionList);
                     loggingActivity(command, code);
-
                 }
             }
             else if (strncmp(buffer_full, "register", 8) == 0)
@@ -150,6 +154,46 @@ void *handleClient(void *arg)
                     remaining_data++;
                     code = handleRegistration(remaining_data, gen_id, conn_fd);
                     loggingActivity(command, code);
+                }
+            }
+            else if (strncmp(buffer, "create_group", 12) == 0)
+            {
+                char *remaining_data = strchr(buffer, '\n');
+                if (remaining_data != NULL)
+                {
+                    remaining_data++;
+                    char groupid[256];
+                    char members[256];
+                    sscanf(remaining_data, "%s\n%[^\r\n]", groupid, members);
+                    code = createGroup(groupid, members, conn_fd);
+                    loggingActivity(command, code);
+                }
+            }
+            else if (strncmp(buffer_full, "un_friend", 9) == 0)
+            {
+                char user_id[10];
+                char *foundUserId = findUserIdBySocket(*sessionList, conn_fd);
+                if (foundUserId != NULL)
+                {
+                    strncpy(user_id, foundUserId, sizeof(user_id) - 1);
+                    user_id[sizeof(user_id) - 1] = '\0';
+
+                    char *remaining_data = strchr(buffer_full, '\n');
+                    if (remaining_data == NULL)
+                    {
+                        // Dữ liệu không hợp lệ
+                    }
+                    else
+                    {
+                        remaining_data++;
+                        code = unFriend(user_id, conn_fd, remaining_data);
+                        loggingActivity(command, code);
+                    }
+                }
+                else
+                {
+                    // Chưa đăng nhập
+                    // send(conn_fd, "4017", sizeof("4017"), 0);
                 }
             }
             else if (strncmp(buffer_full, "add_friend", 10) == 0)

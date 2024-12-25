@@ -32,6 +32,7 @@ void displayMenu02()
     printf("10. Ngắt kết nối\n");
     printf("11. Xem danh sách nhóm của bản thân\n");
     printf("12. Đổi mật khẩu\n");
+    printf("13. Hủy kết bạn\n");
     printf("0. Thoát\n");
     printf("Nhập lựa chọn của bạn: ");
 }
@@ -148,13 +149,13 @@ int main(int argc, char *argv[])
         case 4:
         {
             // Chat giữa hai người
-            // ...
+            
             break;
         }
         case 5:
         {
             // Tạo nhóm chat
-            // ...
+            createGroup(clientSocket);
             break;
         }
         case 6:
@@ -197,6 +198,12 @@ int main(int argc, char *argv[])
         {
             // Xem danh sách nhóm
             changePassword(clientSocket);
+            break;
+        }
+        case 13:
+        {
+            // Xem danh sách nhóm
+            unfriend(clientSocket);
             break;
         }
         // Thêm các trường hợp xử lý cho các chức năng khác tại đây
